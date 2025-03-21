@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en" class="body--live">
+<head>
+  <meta charset="UTF-8">
+  <title>Pricing Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet">
+  <style>
+    /* Base settings matching TMA aesthetic */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif;
+      background-color: #fff;
+      color: #333;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #root {
+      background-color: #f4f4f4;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 800px;
+    }
+    h2 {
+      color: #0056b3;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Container for slider label text and its dynamic value on the right */
+    .slider-label-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .slider-label-container label {
+      font-weight: 600;
+      color: #0056b3;
+      margin: 0;
+    }
+    .slider-label-container span {
+      font-weight: 600;
+      color: #0056b3;
+    }
+    /* Updated slider styling: larger with background color rgba(36, 88, 141, 1) */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 16px;
+      border-radius: 8px;
+      background: rgba(36, 88, 141, 1);
+      outline: none;
+      margin: 10px 0 20px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #0056b3;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: #004494;
+      transform: scale(1.1);
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .radio-group {
+      display: flex;
+      align-items: center;
+      margin: 10px 0 20px;
+    }
+    .radio-group label {
+      margin-right: 20px;
+      font-weight: normal;
+      color: #333;
+    }
+    .submit-button {
+      background-color: #0056b3;
+      color: #fff;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .submit-button:hover {
+      background-color: #004494;
+      transform: scale(1.02);
+    }
+    .result {
+      background-color: #e1ecf4;
+      color: #0056b3;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    /* Responsive styles for mobile devices */
+    @media (max-width: 600px) {
+      #root {
+        padding: 20px;
+      }
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+      input[type="text"], select {
+        padding: 8px;
+        font-size: 14px;
+      }
+      .submit-button {
+        padding: 10px;
+        font-size: 14px;
+      }
+      .result {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <h2>Pricing Calculator v0.1</h2>
+    <form method="post">
+      <!-- Bank Transactions Slider -->
+      <div class="slider-container">
+        <div class="slider-label-container">
+          <label for="bank_tx">Bank Transactions Input:</label>
+          <span id="bank_tx_value">{{ request.form.get('bank_tx', 0) }}</span>
+        </div>
+        <input type="range" id="bank_tx" name="bank_tx" min="0" max="200" value="{{ request.form.get('bank_tx', 0) }}"
+               oninput="document.getElementById('bank_tx_value').innerText = this.value">
+      </div>
+      
+      <!-- Credit Card Transactions Slider -->
+      <div class="slider-container">
+        <div class="slider-label-container">
+          <label for="credit_card_tx">Credit Card Transactions Input:</label>
+          <span id="credit_card_tx_value">{{ request.form.get('credit_card_tx', 0) }}</span>
+        </div>
+        <input type="range" id="credit_card_tx" name="credit_card_tx" min="0" max="200" value="{{ request.form.get('credit_card_tx', 0) }}"
+               oninput="document.getElementById('credit_card_tx_value').innerText = this.value">
+      </div>
+      
+      <!-- Bank Accounts Slider -->
+      <div class="slider-container">
+        <div class="slider-label-container">
+          <label for="bank_accounts">Bank Accounts:</label>
+          <span id="bank_accounts_value">{{ request.form.get('bank_accounts', 0) }}</span>
+        </div>
+        <input type="range" id="bank_accounts" name="bank_accounts" min="0" max="10" value="{{ request.form.get('bank_accounts', 0) }}"
+               oninput="document.getElementById('bank_accounts_value').innerText = this.value">
+      </div>
+      
+      <!-- Credit Cards Slider -->
+      <div class="slider-container">
+        <div class="slider-label-container">
+          <label for="credit_cards">Credit Cards:</label>
+          <span id="credit_cards_value">{{ request.form.get('credit_cards', 0) }}</span>
+        </div>
+        <input type="range" id="credit_cards" name="credit_cards" min="0" max="10" value="{{ request.form.get('credit_cards', 0) }}"
+               oninput="document.getElementById('credit_cards_value').innerText = this.value">
+      </div>
+      
+      <!-- Business Locations Slider -->
+      <div class="slider-container">
+        <div class="slider-label-container">
+          <label for="business_locations">Business Locations:</label>
+          <span id="business_locations_value">{{ request.form.get('business_locations', 0) }}</span>
+        </div>
+        <input type="range" id="business_locations" name="business_locations" min="0" max="10" value="{{ request.form.get('business_locations', 0) }}"
+               oninput="document.getElementById('business_locations_value').innerText = this.value">
+      </div>
+      
+      <!-- Hidden Service Selection -->
+      <input type="hidden" id="service_selection" name="service_selection" value="Accounting/Bookkeeping">
+      
+      <!-- Number of Employees Slider -->
+      <div class="slider-container">
+        <div class="slider-label-container">
+          <label for="num_employees">Number of Employees:</label>
+          <span id="num_employees_value">{{ request.form.get('num_employees', 0) }}</span>
+        </div>
+        <input type="range" id="num_employees" name="num_employees" min="0" max="200" value="{{ request.form.get('num_employees', 0) }}"
+               oninput="document.getElementById('num_employees_value').innerText = this.value">
+      </div>
+      
+      <!-- Additional Services Text Input -->
+      <label for="additional_services">Additional Services (comma separated):</label>
+      <input type="text" id="additional_services" name="additional_services" placeholder="Payroll, etc. DNU" value="{{ request.form.get('additional_services', '') }}">
+      
+      <!-- Require Individual Tax Return Radio Buttons -->
+      <div>
+        <label>Require Individual Tax Return?</label>
+        <div class="radio-group">
+          <input type="radio" id="require_ind_tax_no" name="require_ind_tax" value="No" {% if request.form.get('require_ind_tax', 'No') == 'No' %}checked{% endif %}>
+          <label for="require_ind_tax_no">No</label>
+          <input type="radio" id="require_ind_tax_yes" name="require_ind_tax" value="Yes" {% if request.form.get('require_ind_tax') == 'Yes' %}checked{% endif %}>
+          <label for="require_ind_tax_yes">Yes</label>
+        </div>
+      </div>
+      
+      <!-- Total Individual Tax Returns Slider (hidden by default unless Yes is selected) -->
+      <div class="slider-container" id="total_ind_tax_container" style="display: {% if request.form.get('require_ind_tax', 'No') == 'Yes' %}block{% else %}none{% endif %};">
+        <div class="slider-label-container">
+          <label for="total_ind_tax_returns">Total Individual Tax Returns:</label>
+          <span id="total_ind_tax_returns_value">{{ request.form.get('total_ind_tax_returns', 0) }}</span>
+        </div>
+        <input type="range" id="total_ind_tax_returns" name="total_ind_tax_returns" min="0" max="10" value="{{ request.form.get('total_ind_tax_returns', 0) }}"
+               oninput="document.getElementById('total_ind_tax_returns_value').innerText = this.value">
+      </div>
+      
+      <button type="submit" class="submit-button">Calculate</button>
+    </form>
+    
+    <!-- Display Results if available -->
+    {% if monthly is not none and annual is not none %}
+      <div class="result">
+        <p>Monthly Estimate: ${{ monthly | round(0) }}</p>
+        <p>Annual Estimate: ${{ annual | round(0) }}</p>
+      </div>
+    {% endif %}
+  </div>
+  
+  <script>
+    // Toggle visibility of the Total Individual Tax Returns slider based on radio selection.
+    function toggleTotalTaxReturns() {
+      var yesRadio = document.getElementById('require_ind_tax_yes');
+      var container = document.getElementById('total_ind_tax_container');
+      container.style.display = yesRadio.checked ? 'block' : 'none';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      var radios = document.getElementsByName('require_ind_tax');
+      radios.forEach(function(radio) {
+        radio.addEventListener('change', toggleTotalTaxReturns);
+      });
+      toggleTotalTaxReturns();
+    });
+  </script>
+</body>
+</html>
